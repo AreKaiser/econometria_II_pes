@@ -1,0 +1,175 @@
+
+{
+	"commands" : "",
+	"description" : "Generated when this file was opened on 2025/11/08 20:00:49.",
+	"label" : "auto base",
+	"workbook_meta" : 
+	{
+		"_name" : "c:\\users\\verti\\documents\\github\\econometria_ii_pes\\proyecto.wf1",
+		"_pages" : 
+		[
+			
+			{
+				"_frequency" : "A",
+				"_last_update" : [ 739562.8314467593, "11/08/2025 19:57" ],
+				"_name" : "Base_econo_ii_l2_ck",
+				"_obj_count" : 29,
+				"_objects" : 
+				[
+					
+					{
+						"_data_type" : [ "character", "date" ],
+						"_name" : [ "COUNTRY", "DATEID" ],
+						"_type" : "INDEX"
+					},
+					
+					{
+						"_name" : "AS_INTERACT",
+						"_type" : "EQUATION"
+					},
+					
+					{
+						"_name" : "ASIA",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "C",
+						"_type" : "COEF"
+					},
+					
+					{
+						"_name" : "CK",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "CONTINENTE_NUM",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "COUNTRY",
+						"_type" : "ALPHA"
+					},
+					
+					{
+						"_name" : "DATEID",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "DELTA",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "EMP",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "EU_INTERACT",
+						"_type" : "EQUATION"
+					},
+					
+					{
+						"_name" : "EUROPA",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "FE",
+						"_type" : "EQUATION"
+					},
+					
+					{
+						"_name" : "HC",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "LA_INTERACT",
+						"_type" : "EQUATION"
+					},
+					
+					{
+						"_name" : "LA_INTERSERIAL",
+						"_type" : "EQUATION"
+					},
+					
+					{
+						"_name" : "LATAM",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "LCAP",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "LEMP",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "LHC",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "LRGDP",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "MCO",
+						"_type" : "EQUATION"
+					},
+					
+					{
+						"_name" : "RESID",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "RESID_FE",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "RGDPO",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "RTFPNA",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "RTFPNA_AS",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "RTFPNA_EU",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "RTFPNA_LA",
+						"_type" : "SERIES"
+					},
+					
+					{
+						"_name" : "YEAR",
+						"_type" : "SERIES"
+					}
+				],
+				"_obs_count" : 306
+			}
+		]
+	}
+}
