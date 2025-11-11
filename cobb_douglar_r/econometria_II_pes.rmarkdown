@@ -1,0 +1,259 @@
+---
+title: "econometria_II_pes"
+subtitle: "Trabajo y presentación final — Panel corto con función Cobb–Douglas"
+author: "Autores: Pedro Monzón, Mario Castro Kevin Molina "
+format: pdf
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+#| echo: false
+# Paquetes necesarios (instalar si hace falta)
+req <- c("tidyverse","readxl","plm","fixest","lmtest","sandwich","modelsummary","janitor","broom","broom.helpers","performance")
+new <- setdiff(req, rownames(installed.packages()))
+if(length(new)) install.packages(new, repos = "https://cloud.r-project.org")
+invisible(lapply(req, library, character.only = TRUE))
+
+# Ruta de datos (ajusta si cambias de carpeta)
+data_path <- "/mnt/data/datat_panel_corto.xlsx"
+
+# Intento robusto de identificar columnas de id y tiempo
+guess_names <- function(nms, candidates){
+  nm <- nms[tolower(nms) %in% tolower(candidates)]
+  if(length(nm)) nm[[1]] else NA_character_
+}
+
+raw <- readxl::read_excel(data_path) |> janitor::clean_names()
+
+id_col    <- guess_names(names(raw), c("id","i","entidad","firm","country","region","sector"))
+time_col  <- guess_names(names(raw), c("t","time","year","anio","ano","period"))
+q_col     <- guess_names(names(raw), c("rgndp","pib","q","output","y"))
+l_col     <- guess_names(names(raw), c("emp","l","labor","empleo"))
+k_col     <- guess_names(names(raw), c("rnna","k","capital"))
+
+# Verificaciones mínimas
+stopifnot(!is.na(id_col), !is.na(time_col), !is.na(q_col), !is.na(l_col), !is.na(k_col))
+
+dat <- raw |>
+  rename(id = all_of(id_col), time = all_of(time_col),
+         rgndp = all_of(q_col), emp = all_of(l_col), rnna = all_of(k_col)) |>
+  mutate(across(c(time), as.integer)) |>
+  arrange(id, time)
+
+# Construcción de variables logarítmicas para Cobb–Douglas
+dat <- dat |>
+  mutate(ln_q = log(rgndp),
+         ln_l = log(emp),
+         ln_k = log(rnna))
+
+# Set de panel
+pdat <- pdata.frame(dat, index = c("id","time"))
+
+# Contar N y T (panel corto: N grande, T pequeño)
+N <- nlevels(pdat$id)
+Tbar <- with(dat, mean(table(id)))
+summary_info <- tibble::tibble(N = N, T_promedio = Tbar, Observaciones = nrow(dat))
+summary_info
+```
+
+
+::: callout-note
+**Nota rápida sobre panel corto.** En panel corto (\\(T\\) pequeño y \\(N\\) moderado/grande), las inferencias son más fiables con errores estándar agrupados por unidad (o dos vías si \\(T\\) es suficiente). También es útil contrastar FE vs RE (Hausman) y evaluar exogeneidad estricta, heterogeneidad inobservada y dependencia en sección cruzada.
+:::
+
+# Introducción
+
+**Problema.** ¿Cuál es la elasticidad de producción respecto al empleo (\\(L\\)) y al capital (\\(K\\)) en una función tipo Cobb–Douglas para nuestra muestra en panel corto?
+
+**Justificación.** Medir elasticidades y retornos a escala orienta decisiones de política y gestión. El panel permite controlar heterogeneidad inobservada.
+
+**Objetivo.** Estimar y contrastar modelos (Pooled, FE, RE, Mundlak) y seleccionar el especificación óptima para describir \\(Q\\) en función de \\(L\\) y \\(K\\), con controles de heterogeneidad y diagnóstico completo.
+
+::: pagebreak :::
+
+# Modelo (teoría)
+
+Función Cobb–Douglas agregada: \\\[ Q\_{it} = A_i e^{^\lambda*t} L\*{it}{\\alpha} K\_{it}\^{\\beta} e\^{u\_{it}}, \\\] que en logaritmos se linealiza como: \\\[ \\ln Q\_{it} = c_i + \\tau_t + \\alpha \\ln L\_{it} + \\beta \\ln K\_{it} + u\_{it}. \\\]
+
+-   \\(c_i\\): efectos (inobservados) específicos de unidad.
+-   \\(\\tau_t\\): shocks comunes por tiempo (opcionales).
+-   Retornos a escala: \\(\\alpha + \\beta\\).
+
+Hipótesis clave: - Exogeneidad estricta de regresores (o al menos de \\(\\ln L, \\ln K\\)). - Heterogeneidad inobservada potencialmente correlacionada con regresores \\(\\Rightarrow\\) FE o Mundlak.
+
+::: pagebreak :::
+
+# Metodología (datos)
+
+**Datos.** Importados desde `datat_panel_corto.xlsx`. Se asume estructura \\((id, time)\\) con variables principales: `rgndp` (\\(Q\\)), `emp` (\\(L\\)), `rnna` (\\(K\\)).
+
+**Estrategia empírica.** 1. **Pooled OLS** con y sin dummies de tiempo. 2. **FE (within)** con y sin efectos de tiempo. 3. **RE (GLS)** y **Mundlak** (correlated random effects). 4. **Pruebas:** LM Breusch–Pagan (RE vs pooled), F FE vs pooled, Hausman (FE vs RE), test de Mundlak (significancia de medias por id), Wooldridge AR(1), heterocedasticidad (White), dependencia seccional (Pesaran CD, si aplica). 5. **Errores estándar:** cluster por `id` (dos vías `id × time` si \\(T\\ge 5\\)). 6. **Selección final:** consistencia teórica, contrastes, diagnóstico de residuos y parsimonia.
+
+
+```{r}
+#| label: estimacion
+#| message: false
+#| warning: false
+
+# Dummies de tiempo (opcionales)
+pdat$time_f <- factor(pdat$time)
+
+# Modelos base
+m_pool   <- plm(ln_q ~ ln_l + ln_k, data = pdat, model = "pooling")
+m_pool_t <- plm(ln_q ~ ln_l + ln_k + time_f, data = pdat, model = "pooling")
+
+m_fe     <- plm(ln_q ~ ln_l + ln_k, data = pdat, model = "within", effect = "individual")
+m_fe_t   <- plm(ln_q ~ ln_l + ln_k + time_f, data = pdat, model = "within", effect = "twoways")
+
+m_re     <- plm(ln_q ~ ln_l + ln_k, data = pdat, model = "random", effect = "individual")
+m_re_t   <- plm(ln_q ~ ln_l + ln_k + time_f, data = pdat, model = "random", effect = "twoways")
+
+# Mundlak: añadir medias por id de los regresores (CRE)
+means_id <- pmodel.response(plm::pmean(pdat[,c("ln_l","ln_k")], index = c("id","time")), effect = "individual")
+pdat$ln_l_bar <- as.numeric(means_id[,1])
+pdat$ln_k_bar <- as.numeric(means_id[,2])
+m_mundlak <- plm(ln_q ~ ln_l + ln_k + ln_l_bar + ln_k_bar, data = pdat, model = "random", effect = "individual")
+
+# Errores estándar robustos (cluster id)
+vc <- function(mod) vcovHC(mod, type = "HC1", cluster = "group")
+se_pool   <- sqrt(diag(vc(m_pool)))
+se_pool_t <- sqrt(diag(vc(m_pool_t)))
+se_fe     <- sqrt(diag(vc(m_fe)))
+se_fe_t   <- sqrt(diag(vc(m_fe_t)))
+se_re     <- sqrt(diag(vc(m_re)))
+se_re_t   <- sqrt(diag(vc(m_re_t)))
+se_mund   <- sqrt(diag(vc(m_mundlak)))
+
+# Tabla comparativa
+msummary(list("Pooled"=m_pool,"Pooled+T"=m_pool_t,"FE"=m_fe,"FE 2V"=m_fe_t,"RE"=m_re,"RE 2V"=m_re_t,"Mundlak"=m_mundlak),
+         gof_map = c("nobs","r.squared","adj.r.squared"),
+         statistic = "std.error",
+         vcov = list(vc,vc,vc,vc,vc,vc,vc),
+         stars = TRUE)
+```
+
+
+**Contrastes clave**
+
+
+```{r}
+#| label: tests
+#| message: false
+#| warning: false
+
+# FE vs pooled (F de efectos fijos)
+test_fe_vs_pool <- pFtest(m_fe, m_pool)
+
+# RE vs pooled (LM Breusch-Pagan)
+test_re_vs_pool <- plmtest(m_pool, type = "bp")
+
+# Hausman (FE vs RE)
+test_hausman <- phtest(m_fe, m_re)
+
+# Mundlak: significancia de medias por id
+test_mundlak <- coeftest(m_mundlak, vcov = vc(m_mundlak))
+
+# Autocorrelación (Wooldridge)
+test_wooldridge <- pbgtest(m_fe)  # alternativa: pwdtest/morangio; pbgtest ~ BG en panel
+
+# Heterocedasticidad (White robust check)
+test_white_fe <- bptest(m_fe, studentize = FALSE)
+
+# Dependencia seccional (si T suficiente)
+test_cd <- tryCatch({
+  pcross <- pcovres(m_fe) # si no está disponible en su versión, puede usar pcdtest del paquete plm
+  pcdtest(m_fe, test = "cd")
+}, error=function(e) pcdtest(m_fe, test="cd"))
+
+list(
+  FE_vs_Pooled = test_fe_vs_pool,
+  RE_vs_Pooled = test_re_vs_pool,
+  Hausman_FE_RE = test_hausman,
+  Mundlak = broom::tidy(test_mundlak),
+  Wooldridge_AR = test_wooldridge,
+  White_HC = test_white_fe,
+  Pesaran_CD = test_cd
+)
+```
+
+
+::: pagebreak :::
+
+# Resultados
+
+
+```{r}
+#| label: resultados
+#| message: false
+#| warning: false
+
+# Selección de modelo "óptimo" (regla ilustrativa):
+# 1) Preferir FE si Hausman rechaza RE (p < 0.05)
+# 2) Si Mundlak sugiere correlación, preferir CRE/Mundlak o FE
+# 3) Incluir efectos de tiempo si aportan (F-test conjunto)
+# 4) Inferencia con SE agrupados
+
+haus_p <- tryCatch(test_hausman$p.value, error=function(e) NA_real_)
+use_fe <- is.finite(haus_p) && haus_p < 0.05
+
+if (use_fe) {
+  modelo_final <- m_fe_t
+  modelo_lbl <- "FE con efectos de tiempo"
+} else {
+  # Si no rechaza, considerar Mundlak
+  modelo_final <- m_mundlak
+  modelo_lbl <- "Mundlak (CRE)"
+}
+
+# Retornos a escala (en modelos sin medias: ln_l + ln_k)
+coefs <- broom::tidy(modelo_final, conf.int = TRUE, vcov = vc(modelo_final))
+retornos <- coefs |>
+  filter(term %in% c("ln_l","ln_k")) |>
+  summarise(alpha_beta = sum(estimate))
+
+list(modelo_elegido = modelo_lbl, retornos_a_escala = retornos$alpha_beta)
+```
+
+
+**Interpretación (guía):** - \\(\\alpha\\): elasticidad de \\(Q\\) respecto a \\(L\\). - \\(\\beta\\): elasticidad de \\(Q\\) respecto a \\(K\\). - Si \\(\\alpha+\\beta = 1\\) retornos constantes; \\(\>1\\) crecientes; \\(\<1\\) decrecientes. - Comente robustez (pruebas, SE cluster, sensibilidad a dummies de tiempo).
+
+::: pagebreak :::
+
+# Referencias
+
+-   Wooldridge, J. M. (2010). *Econometric Analysis of Cross Section and Panel Data*. MIT Press.
+-   Baltagi, B. H. (2021). *Econometric Analysis of Panel Data* (6ª ed.). Springer.
+-   Mundlak, Y. (1978). *On the Pooling of Time Series and Cross Section Data*. Econometrica, 46(1), 69–85.
+-   Arellano, M. (2003). *Panel Data Econometrics*. Oxford University Press.
+
+::: pagebreak :::
+
+# Apéndice
+
+**Especificaciones alternativas y checks adicionales**
+
+
+```{r}
+#| label: appendix
+#| message: false
+#| warning: false
+
+# Dos-vías (si T>=5): errores cruzados con fixest
+m_fe_fixest <- feols(ln_q ~ ln_l + ln_k | id + time, data = as.data.frame(pdat), cluster = "id")
+etable(m_fe_fixest, dict = c(ln_q="ln Q", ln_l="ln L", ln_k="ln K"))
+
+# Prueba conjunta de dummies de tiempo en FE
+wald_time <- wald(m_fe_t, keep = "time_f")
+wald_time
+
+# Sensibilidad: incluir controles de heterogeneidad observada si existen
+# (ejemplo: "control1", "control2")
+if (all(c("control1","control2") %in% names(pdat))) {
+  m_fe_ctrl <- plm(ln_q ~ ln_l + ln_k + control1 + control2, data = pdat, model="within", effect="twoways")
+  coeftest(m_fe_ctrl, vcov = vc(m_fe_ctrl))
+}
+```
+
