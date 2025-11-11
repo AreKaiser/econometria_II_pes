@@ -1,0 +1,109 @@
+---
+title: "econometria_II_pes — Presentación"
+subtitle: "Panel corto • Cobb–Douglas"
+author: "Autor(a): <tu nombre>"
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    controls: true
+    progress: true
+    toc: false
+    transition: fade
+    incremental: false
+    hash: true
+    overview: true
+lang: es
+execute:
+  echo: false
+  warning: false
+  message: false
+bibliography: references.bib
+---
+
+```{r}
+#| label: setup
+req <- c("tidyverse","readxl","plm","fixest","lmtest","sandwich","modelsummary","janitor","broom","broom.helpers")
+new <- setdiff(req, rownames(installed.packages()))
+if(length(new)) install.packages(new, repos = "https://cloud.r-project.org")
+invisible(lapply(req, library, character.only = TRUE))
+
+data_path <- "/mnt/data/datat_panel_corto.xlsx"
+dat <- readxl::read_excel(data_path) |> janitor::clean_names()
+
+# Heurística para nombres
+guess <- function(nms, cands){ nm <- nms[tolower(nms) %in% tolower(cands)]; if(length(nm)) nm[[1]] else NA_character_ }
+id_col   <- guess(names(dat), c("id","i","entidad","firm","country","region","sector"))
+time_col <- guess(names(dat), c("t","time","year","anio","ano","period"))
+q_col    <- guess(names(dat), c("rgndp","pib","q","output","y"))
+l_col    <- guess(names(dat), c("emp","l","labor","empleo"))
+k_col    <- guess(names(dat), c("rnna","k","capital"))
+stopifnot(!is.na(id_col), !is.na(time_col), !is.na(q_col), !is.na(l_col), !is.na(k_col))
+
+dat <- dat |>
+  rename(id = all_of(id_col), time = all_of(time_col),
+         rgndp = all_of(q_col), emp = all_of(l_col), rnna = all_of(k_col)) |>
+  mutate(ln_q = log(rgndp), ln_l = log(emp), ln_k = log(rnna))
+
+pdat <- plm::pdata.frame(dat, index = c("id","time"))
+pdat$time_f <- factor(pdat$time)
+```
+
+## Introducción
+
+- **Problema:** estimar elasticidades \\(\\alpha\\) y \\(\\beta\\) en Cobb–Douglas.
+- **Justificación:** medir retornos a escala y productividad.
+- **Objetivo:** seleccionar un modelo óptimo (FE/RE/Mundlak) con diagnóstico completo.
+
+---
+
+## Modelo (teoría)
+
+\\[ \\ln Q_{it} = c_i + \\tau_t + \\alpha \\ln L_{it} + \\beta \\ln K_{it} + u_{it}. \\]
+
+- Heterogeneidad inobservada: \\(c_i\\).
+- Shocks comunes: \\(\\tau_t\\).
+- Retornos a escala: \\(\\alpha+\\beta\\).
+
+---
+
+## Metodología (datos)
+
+- Panel corto: cluster por `id` (dos vías si \\(T\\) lo permite).
+- Comparar: Pooled, FE, RE y **Mundlak (CRE)**.
+- Pruebas: LM (RE vs pooled), F (FE vs pooled), **Hausman**, **Wooldridge AR(1)**, **White HC**, **Pesaran CD**.
+
+```{r}
+m_fe <- plm(ln_q ~ ln_l + ln_k, data = pdat, model = "within", effect = "individual")
+m_re <- plm(ln_q ~ ln_l + ln_k, data = pdat, model = "random", effect = "individual")
+
+# Hausman
+haus <- phtest(m_fe, m_re)
+haus
+```
+
+---
+
+## Resultados (resumen)
+
+```{r}
+vc <- function(mod) vcovHC(mod, type="HC1", cluster="group")
+tab <- modelsummary::msummary(list("FE"=m_fe,"RE"=m_re), vcov=list(vc,vc), stars=TRUE, output="data.frame")
+knitr::kable(tab, format="html")
+```
+
+**Guía de lectura:** enfoque en signos, magnitudes y \\(\\alpha+\\beta\\).
+
+---
+
+## Conclusiones
+
+- Modelo elegido (criterios: Hausman, Mundlak, diagnóstico).
+- Retornos a escala estimados.
+- Implicaciones para política o gestión.
+
+---
+
+## Referencias
+
+- Wooldridge (2010); Baltagi (2021); Mundlak (1978); Arellano (2003).
