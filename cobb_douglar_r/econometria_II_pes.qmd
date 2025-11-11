@@ -45,7 +45,7 @@ Para las pruebas usaremos el siguiente que incluye controles : $$ln Q_{it} = \be
 
 \- Empleo, emp, Número de personas empleadas.
 
-\- Control, hc, delta, Capital humano y tasa de depreciación.
+\- Control, rkna, irr, Capital humano y tasa de depreciación.
 
 **Estrategia empírica.**
 
@@ -69,12 +69,12 @@ Resultados:
 
 | variable  | Estadistico - t | p-valor |
 |-----------|-----------------|---------|
-| $\beta_1$ | B               | C       |
-| $\beta_2$ | F               | G       |
-| $\beta_3$ | G               | G       |
-| $\beta_4$ | G               | G       |
-| $\beta_5$ | G               | G       |
-| $\beta_6$ | G               | G       |
+| $\beta_1$ | 7.131347        | 0.0000  |
+| $\beta_2$ | 92.24159        | 0.0000  |
+| $\beta_3$ | 11.61807        | 0.0000  |
+| $\beta_4$ | -6.446756       | 0.0000  |
+| $\beta_5$ | 18.25149        | 0.0000  |
+
 
 Interpretación:
 
@@ -105,6 +105,12 @@ Resultados:
 Interpretación:
 
 ## Autocorrelación:
+
+Resultados:
+
+Interpretación:
+
+## Munlak:
 
 Resultados:
 
