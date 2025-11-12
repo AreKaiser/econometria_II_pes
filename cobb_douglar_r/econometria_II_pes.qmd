@@ -77,8 +77,13 @@ Autocorrelación Wooldridge AR(1),
 
 ## Significancia
 
+Hipotesis:
+
+$H_0$
+
 Resultados:
 
+<<<<<<< Updated upstream
 | variable  | Estadistico - t | p-valor |
 |-----------|-----------------|---------|
 | $\beta_1$ | 7.131347        | 0.0000  |
@@ -90,6 +95,21 @@ Resultados:
 Interpretación:
 
 ## Breusch–Pagan:
+=======
+| variable          | Coeficiente | Estadistico - t | p-valor |
+|-------------------|-------------|-----------------|---------|
+| $\beta_1$         | 0.840942    | 7.131347        | 0.0000  |
+| $\beta_2$ LNRNNA  | 0.867767    | 92.24159        | 0.0000  |
+| $\beta_3$ LNEMP   | 0.121680    | 11.61807        | 0.0000  |
+| $\beta_4$ LNRKNA  | -0.616321   | -6.446756       | 0.0000  |
+| $\beta_5$ LNIRR   | 0.320663    | 18.25149        | 0.0000  |
+
+Interpretación:
+
+-   En el primero modelo con MCO todas las variables rechazan la hipotesis nula lo que infiere significancia incluyendo nuestras variables de control, además el signo de capital y trabajo son positivos el esperado por la teoría económíca.
+
+## Breusch–Pagan
+>>>>>>> Stashed changes
 
 Resultados:
 
