@@ -79,23 +79,8 @@ Autocorrelación Wooldridge AR(1),
 
 Hipotesis:
 
-$H_0$
+$$H_0: \beta_k=0\,\,\,vs\,\,\,H_1: \beta_k\neq0\,\,\,\forall\,k=1,..,K$$
 
-Resultados:
-
-<<<<<<< Updated upstream
-| variable  | Estadistico - t | p-valor |
-|-----------|-----------------|---------|
-| $\beta_1$ | 7.131347        | 0.0000  |
-| $\beta_2$ | 92.24159        | 0.0000  |
-| $\beta_3$ | 11.61807        | 0.0000  |
-| $\beta_4$ | -6.446756       | 0.0000  |
-| $\beta_5$ | 18.25149        | 0.0000  |
-
-Interpretación:
-
-## Breusch–Pagan:
-=======
 | variable          | Coeficiente | Estadistico - t | p-valor |
 |-------------------|-------------|-----------------|---------|
 | $\beta_1$         | 0.840942    | 7.131347        | 0.0000  |
@@ -109,25 +94,31 @@ Interpretación:
 -   En el primero modelo con MCO todas las variables rechazan la hipotesis nula lo que infiere significancia incluyendo nuestras variables de control, además el signo de capital y trabajo son positivos el esperado por la teoría económíca.
 
 ## Breusch–Pagan
->>>>>>> Stashed changes
+Hipotesis:
+
+$$H_0: \sigma_{\mu}^2=0\,\,\,vs\,\,\,H_1: \sigma_{\mu}^2\neq0$$
 
 Resultados:
 
 | variable   | Estadistico - $\chi^2$ | p-valor |
 |------------|------------------------|---------|
-| $\sigma^2$ | B                      | C       |
+| $\sigma^2$ | 1856.029               | 0.0000  |
 
 Interpretación:
 
--   p-valor: \<0.001 → se rechaza H_0. Se descarta modelo pooled
-
+-   p-valor < 0.001 lo cual implica que se rechaza $H_0$ a cualquier nivel de significancia. Se descarta que el modelo sea pooled ya que la prueba infiere que pueden existir efectos aleatorios significativos.
 ## Haussman:
+Hipotesis:
 
+$$H_0: Cov(x_{it},μ_{i})=0\,\,\,vs\,\,\,H_1: Cov(x_{it},μ_{i})\neq0$$
 Resultados:
+| Test                 | Estadistico - $\chi^2$(4)| p-valor |
+|--------------------- |------------------------  |---------|
+| cross-section random | 174.440385               | 0.0000  |
 
 Interpretación:
 
--   Se rechaza H_0. Se prefiere FE por robustez.
+-   Se rechaza $H_0$. conla cual podemos inferir que RE son inconcistente por lo que para nuestro modelo usaremos FE.
 
 ## Heterocedasticidad y Autocorrelación:
 
