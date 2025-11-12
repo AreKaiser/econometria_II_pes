@@ -12,15 +12,27 @@ editor: visual
 
 # Introducción
 
-Este proyecto analiza si el efecto del crecimiento tecnológico sobre el PIB real ha sido estable entre 2015 y 2020, y si varía significativamente entre regiones. Utilizando datos de panel de la Penn World Table 11.0
+Este proyecto busca estudiar las diferencias del crecimiento tecnológico$\ A$ sobre el PIB real entre regiones utlizando un panel de datos entre 2015 y 2020. Utilizando datos de panel de la Penn World Table 11.0.
 
-**Problemas.** ¿Cuál es la elasticidad de producción respecto al empleo $L$, la del capital $K$ y la productivadad total de los factores $A_0$ en una función tipo Cobb–Douglas para nuestra muestra en panel corto?
+**Problemas:**
 
-¿Ha sido estable en el tiempo el efecto del crecimiento tecnológico ($A_0$) sobre el PIB real ($Q$) en los países durante el período 2015–2020,
+-   ¿Cuál es la elasticidad de producción respecto al empleo $L$, la del capital $K$ y la productividad total de los factores $A_0$ en una función tipo Cobb–Douglas para una muestra en panel corto?
 
-**Justificación.** Medir elasticidades y retornos a escala orienta decisiones de política y gestión. El panel permite controlar heterogeneidad inobservada.
+-   ¿Existe diferencia respecto al la tecnología de las regiones del mundo?
 
-**Objetivo.** Estimar y contrastar modelos (Pooled, FE, RE, Mundlak) y seleccionar el especificación óptima para describir $Q$ en función de $L$ y $K$, con controles de heterogeneidad y diagnóstico completo. productividad total de los factores
+<!-- -->
+
+-   ¿Cual es el componente de tecnología para Centromérica, y
+
+-   ¿Cuales son sus elásticidades?
+
+**Justificación:**
+
+Conocer las elasticidades de la producción respecto al nivel medir elasticidades permite conocer la eficiencia en el aprovechamiento de los recursos de un país, así como retornos de escala, relevantes en la orientación decisiones de política y e inversión en el entorno internacional y macroeconómico, el uso de información tipo panel permite el uso de técnicas para controlar la heterogeneidad inobservada de los individuos.
+
+**Objetivo:**
+
+-   Estimar y contrastar modelos (Pooled, FE, RE, Mundlak) y seleccionar el especificación óptima para describir $Q$ en función de $L$ y $K$, con controles de heterogeneidad y diagnóstico completo. productividad total de los factores
 
 # Modelo (teoría)
 
@@ -75,10 +87,9 @@ Resultados:
 | $\beta_4$ | -6.446756       | 0.0000  |
 | $\beta_5$ | 18.25149        | 0.0000  |
 
-
 Interpretación:
 
-## Breusch–Pagan
+## Breusch–Pagan:
 
 Resultados:
 
@@ -98,23 +109,82 @@ Interpretación:
 
 -   Se rechaza H_0. Se prefiere FE por robustez.
 
-## Heterocedasticidad:
+## Heterocedasticidad y Autocorrelación:
 
-Resultados:
-
-Interpretación:
-
-## Autocorrelación:
-
-Resultados:
-
-Interpretación:
+Se optó por realizar las estimaciones utilizando errores estándar robustos de White con corrección por sección cruzada ("White cross-section"), sacrificando así la eficiencia para contar con consistencia ante la presencia de heterocedasticidad y autocorrelación en los errores.
 
 ## Munlak:
 
-Resultados:
+Se procedió a aplicar al modelo panel, la prueba de Mundlak en la que se incluye los promedios a lo largo del tiempo de las variables explicativas, capturando de esta manera la heterogeneidad individual, y evaluando la significancia de los coeficientes.
 
-Interpretación:
+Resultados (Resumidos):
+
+| Variable                         | Coeificiente | Estadístico - t | P-valor |
+|----------------------------------|--------------|-----------------|---------|
+| $\ C$                            | 0.571558     | 19.25503        | 0.0000  |
+| $\ ln(rnna)$                     | -1.181668    | -5.028303       | 0.0040  |
+| $\ ln((emp)$                     | 0.33718      | 0.630803        | 0.5559  |
+| $\ ln(rkna)$                     | 1.761365     | 7.256737        | 0.0008  |
+| $\ ln(irr)$                      | 0.149121     | 0.660938        | 0.5379  |
+| $\ australia\,and\,new\,zealand$ | 0.507438     | 170.6943        | 0.0000  |
+| $\ western\,europe$              | 0.337306     | 145.3728        | 0.0000  |
+| $\ eastern\,asia$                | 0.205481     | 30.71888        | 0.0000  |
+| $\ northern\,america$            | 0.514339     | 140.9615        | 0.0000  |
+| $\ eastern\,asia$                | 0.154359     | 11.93129        | 0.0001  |
+| $\ northern\,africa$             | 0.427063     | 50.04812        | 0.0000  |
+| $\ ln(rnna)\,promedio$           | 2.05137      | 8.75873         | 0.0000  |
+| $\ ln(empb)\,promedio$           | -0.221616    | -0.414674       | 0.0000  |
+| $\ ln(rknab)\,promedio$          | -3.096272    | -12.4321        | 0.0000  |
+| $\ ln(irr)\,promedio$            | 0.164315     | 0.73733         | 0.0000  |
+
+El ajuste Mundlak funciona bajo la hipótesis $\ H_0: \gamma =0$, en la que los promedios de las regresoras no explican $\ u_i$ lo que implica ausencia de correlación entre ambas.
+
+Interpretación: En este caso se determinó que sí existe dicha correlación y se conserva como modelo final la misma especificación como Modelo, puesto que permite controlar la heterogeneidad detectada.
+
+# Prueba de Wald: Rendimientos constantes a escala para 
+
+Se realizó la prueba de w
+
+# Modelo Final
+
+Después del análisis se determinó optar el modelo de Mundlak con matriz de convarianzas
+robustas tipo white. Esto permite tener un modelo que relaja el supuesto de homocedasticidad
+y de autocorrelación, permitiendo consistencia en los parámetros, con ayuda del control
+de la heterogeneidad:
+
+$$
+\begin{aligned}
+lnQ &= 0.5716 
+- 1.1817\,\ln(\text{rnna})
++ 0.3372\,\ln(\text{empleo})\\
+&\quad + 1.7614\,\ln(\text{rkna})
++ 0.1491\,\ln(\text{irr}) \\
+&\quad - 0.0065\,\text{Caribbean}
++ 0.3759\,\text{Middle Africa}
++ 0.1119\,\text{Southern Europe}\\
+&\quad + 0.1351\,\text{Western Asia}
++ 0.1031\,\text{South America} \\
+&\quad + 0.5074\,\text{Australia \& New Zealand}
++ 0.3373\,\text{Western Europe}
++ 0.1643\,\text{Eastern Africa}\\
+&\quad + 0.0707\,\text{Western Africa}
++ 0.0862\,\text{Southern Asia} \\
+&\quad + 0.2055\,\text{Eastern Asia}
++ 0.5143\,\text{Northern America}
+- 0.0607\,\text{South Eastern Asia}\\
+&\quad + 0.2037\,\text{Southern Africa}
++ 0.2005\,\text{Northern Europe} \\
+&\quad + 0.4271\,\text{Northern Africa}
++ 0.3308\,\text{Melanesia}
+- 0.2397\,\text{Central Asia} \\
+&\quad + 2.0514\,\ln(\text{rnna promedio})
+- 0.2216\,\ln(\text{empleo promedio})
+- 3.0963\,\ln(\text{rkna promedio}) \\
+&\quad + 0.1643\,\ln(\text{irr promedio}) + \varepsilon
+\end{aligned}
+$$
+
+
 
 ::: pagebreak :::
 
@@ -124,5 +194,41 @@ Interpretación:
 -   Baltagi, B. H. (2021). *Econometric Analysis of Panel Data* (6ª ed.). Springer.
 -   Mundlak, Y. (1978). *On the Pooling of Time Series and Cross Section Data*. Econometrica, 46(1), 69–85.
 -   Arellano, M. (2003). *Panel Data Econometrics*. Oxford University Press.
+
+::: pagebreak :::
+
+# Apéndice
+
+## Tabla de modelo munlak completo
+
+| Variable                         | Coeificiente | Estadístico - t | P-valor |
+|----------------------------------|--------------|-----------------|---------|
+| $\ C$                            | 0.571558     | 19.25503        | 0.0000  |
+| $\ ln(rnna)$                     | -1.181668    | -5.028303       | 0.0040  |
+| $\ ln((emp)$                     | 0.33718      | 0.630803        | 0.5559  |
+| $\ ln(rkna)$                     | 1.761365     | 7.256737        | 0.0008  |
+| $\ ln(irr)$                      | 0.149121     | 0.660938        | 0.5379  |
+| $\ caribbean$                    | -0.006518    | -1.289447       | 0.2537  |
+| $\ middle\,africa$               | 0.375896     | 43.79931        | 0.0000  |
+| $\ southern\,europe$             | 0.111903     | 39.62774        | 0.0000  |
+| $\ western\,asia$                | 0.13506      | 28.84038        | 0.0000  |
+| $\ south\,america$               | 0.103056     | 8.378035        | 0.0004  |
+| $\ australia\,and\,new\,zealand$ | 0.507438     | 170.6943        | 0.0000  |
+| $\ western\,europe$              | 0.337306     | 145.3728        | 0.0000  |
+| $\ eastern\,africa$              | 0.164271     | 19.65421        | 0.0000  |
+| $\ western\,africa$              | 0.07068      | 6.18675         | 0.0016  |
+| $\ southern\,asia$               | 0.086194     | 11.46297        | 0.0001  |
+| $\ eastern\,asia$                | 0.205481     | 30.71888        | 0.0000  |
+| $\ northern\,america$            | 0.514339     | 140.9615        | 0.0000  |
+| $\ south\,eastern\,asia$         | -0.060717    | -13.48968       | 0.0000  |
+| $\ southern\,africa$             | 0.203666     | 79.33278        | 0.0000  |
+| $\ eastern\,asia$                | 0.154359     | 11.93129        | 0.0001  |
+| $\ northern\,europe$             | 0.200516     | 59.88689        | 0.0000  |
+| $\ northern\,africa$             | 0.427063     | 50.04812        | 0.0000  |
+| $\ central\,asia$                | -0.23973     | -25.50089       | 0.0000  |
+| $\ ln(rnna)\,promedio$           | 2.05137      | 8.75873         | 0.0000  |
+| $\ ln(empb)\,promedio$           | -0.221616    | -0.414674       | 0.0000  |
+| $\ ln(rknab)\,promedio$          | -3.096272    | -12.4321        | 0.0000  |
+| $\ ln(irr)\,promedio$            | 0.164315     | 0.73733         | 0.0000  |
 
 ::: pagebreak :::
