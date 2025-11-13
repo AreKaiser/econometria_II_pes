@@ -156,11 +156,11 @@ Con errores robustos White.
 
 ## Elasticidades Estimadas
 
-| Factor            | Elasticidad | Interpretación                |
-|-------------------|-------------|-------------------------------|
-| Trabajo (global)  | 0.32        | Rendimientos casi constantes  |
-| Capital (global)  | 0.65        | $\alpha + \beta \approx 0.97$ |
-| Trabajo (América) | \~0.91      | Mayor dependencia del empleo  |
+| Factor            | Elasticidad |
+|-------------------|-------------|
+| Trabajo (global)  | 0.32        | 
+| Capital (global)  | 0.65        | 
+| Trabajo (América) | \~0.91      |
 
 > América muestra mayor sensibilidad del PIB al empleo, sugiriendo menor capitalización.
 
@@ -188,7 +188,7 @@ Con errores robustos White.
 | (T=6)\*AFRICA  | 0.0961      | 0.0120  |
 | (T=5)\*OCEANIA | 0.0572      | 0.0747  |
 
-> ✅ Europa muestra avance tecnológico sostenido.\
+> Europa muestra avance tecnológico sostenido.\
 > África mejora en 2020, pero desde niveles bajos.
 
 ------------------------------------------------------------------------
@@ -204,14 +204,6 @@ Con errores robustos White.
 5.  **Oceanía**: sin ventaja significativa respecto a América.
 
 > El modelo Mundlak con errores robustos es el más adecuado para estos datos.
-
-------------------------------------------------------------------------
-
-## Recomendaciones
-
--   Políticas en América deberían enfocarse en **capital humano y físico**.
--   África necesita inversión en **infraestructura tecnológica**.
--   Monitorear convergencia regional mediante modelos dinámicos (GMM).
 
 ------------------------------------------------------------------------
 
