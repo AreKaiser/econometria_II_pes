@@ -81,19 +81,19 @@ Hipotesis:
 
 $$H_0: \beta_k=0\,\,\,vs\,\,\,H_1: \beta_k\neq0\,\,\,\forall\,k=1,..,K$$
 
-| variable          | Coeficiente | Estadistico - t | p-valor |
-|-------------------|-------------|-----------------|---------|
-| $\beta_1$         | 0.840942    | 7.131347        | 0.0000  |
-| $\beta_2$ LNRNNA  | 0.867767    | 92.24159        | 0.0000  |
-| $\beta_3$ LNEMP   | 0.121680    | 11.61807        | 0.0000  |
-| $\beta_4$ LNRKNA  | -0.616321   | -6.446756       | 0.0000  |
-| $\beta_5$ LNIRR   | 0.320663    | 18.25149        | 0.0000  |
+| variable         | Coeficiente | Estadistico - t | p-valor |
+|------------------|-------------|-----------------|---------|
+| $\beta_1$        | 10.82457    | 199.8994        | 0.0000  |
+| $\beta_3$ LNRKNA | 1.094484    | 3.717484        | 0.0002  |
+| $\beta_2$ LNEMP  | 0.939899    | 50.39413        | 0.0000  |
 
 Interpretación:
 
--   En el primero modelo con MCO todas las variables rechazan la hipotesis nula lo que infiere significancia incluyendo nuestras variables de control, además el signo de capital y trabajo son positivos el esperado por la teoría económíca.
+-   En el primero modelo con MCO todas las variables rechazan la hipotesis nula con lo cual se puede infiere significancia , además el signo de capital y trabajo son positivos el esperado por la teoría económíca.
+-   El que se haya pasado esta prueba nos indica que nuestro modelo es solido y tiene sentido economico ya que este no contradice la teoría., gracias a esto podemos realizar las siguientes pruebas econometricas.
 
 ## Breusch–Pagan
+
 Hipotesis:
 
 $$H_0: \sigma_{\mu}^2=0\,\,\,vs\,\,\,H_1: \sigma_{\mu}^2\neq0$$
@@ -102,23 +102,27 @@ Resultados:
 
 | variable   | Estadistico - $\chi^2$ | p-valor |
 |------------|------------------------|---------|
-| $\sigma^2$ | 1856.029               | 0.0000  |
+| $\sigma^2$ | 2048.162               | 0.0000  |
 
 Interpretación:
 
--   p-valor < 0.001 lo cual implica que se rechaza $H_0$ a cualquier nivel de significancia. Se descarta que el modelo sea pooled ya que la prueba infiere que pueden existir efectos aleatorios significativos.
-## Haussman:
-Hipotesis:
+-   p-valor es menor a 0.001 lo cual implica que se rechaza $H_0$ a cualquier nivel de significancia. Se descarta que el modelo sea pooled ya que la prueba infiere que pueden existir efectos aleatorios significativos.
+-   Sabiendo que nuestro modelo no es pooled podemos realizar las pruebas para saber si es un panel con efectos fijos o con efectos aleatorios.
 
-$$H_0: Cov(x_{it},μ_{i})=0\,\,\,vs\,\,\,H_1: Cov(x_{it},μ_{i})\neq0$$
+## Haussman
+
+Hipotesis: $$H_0: Cov(x_{it},μ_{i})=0\,\,\,vs\,\,\,H_1: Cov(x_{it}, μ_{i})\neq0$$
+
 Resultados:
-| Test                 | Estadistico - $\chi^2$(4)| p-valor |
-|--------------------- |------------------------  |---------|
-| cross-section random | 174.440385               | 0.0000  |
+
+| test                 | Estadistico - $\chi^2$ | p-valor |
+|----------------------|------------------------|---------|
+| Cross section-random | 27.806061              | 0.0000  |
 
 Interpretación:
 
--   Se rechaza $H_0$. conla cual podemos inferir que RE son inconcistente por lo que para nuestro modelo usaremos FE.
+-   Se rechaza $H_0$ con la cual podemos inferir que RE son inconcistente por lo que para nuestro modelo usaremos FE.
+-   Sabiendo que nuestro modelo tiene efectos fijos podemos ir por 3 caminos eliminarlos, controlarlos o usar CRE. Como ingresaremos varias variables dummys que son constantes no podemos elimiarlos debido a que esta información es crucial para nuestro modelo. por lo que no iremos por CRE por lo que es necesario realizar la prueba Munlak.
 
 ## Heterocedasticidad y Autocorrelación:
 
@@ -152,16 +156,13 @@ El ajuste Mundlak funciona bajo la hipótesis $\ H_0: \gamma =0$, en la que los 
 
 Interpretación: En este caso se determinó que sí existe dicha correlación y se conserva como modelo final la misma especificación como Modelo, puesto que permite controlar la heterogeneidad detectada.
 
-# Prueba de Wald: Rendimientos constantes a escala para 
+# Prueba de Wald: Rendimientos constantes a escala para
 
 Se realizó la prueba de w
 
 # Modelo Final
 
-Después del análisis se determinó optar el modelo de Mundlak con matriz de convarianzas
-robustas tipo white. Esto permite tener un modelo que relaja el supuesto de homocedasticidad
-y de autocorrelación, permitiendo consistencia en los parámetros, con ayuda del control
-de la heterogeneidad:
+Después del análisis se determinó optar el modelo de Mundlak con matriz de convarianzas robustas tipo white. Esto permite tener un modelo que relaja el supuesto de homocedasticidad y de autocorrelación, permitiendo consistencia en los parámetros, con ayuda del control de la heterogeneidad:
 
 $$
 \begin{aligned}
@@ -194,8 +195,6 @@ lnQ &= 0.5716
 &\quad + 0.1643\,\ln(\text{irr promedio}) + \varepsilon
 \end{aligned}
 $$
-
-
 
 ::: pagebreak :::
 
