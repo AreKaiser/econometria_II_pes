@@ -31,6 +31,14 @@ Analizar las diferencias en el crecimiento tecnológico $A_{it}$ sobre el PIB re
 
 ------------------------------------------------------------------------
 
+## Problemas de investigación
+
+-   ¿Cuál es la **elasticidad de producción** respecto al empleo $\ (L)$, al capital $(K)$ y a la PTF $(A_{it})$ en una función Cobb–Douglas, usando un panel corto?
+-   ¿Existe **heterogeneidad** en el avance tecnológico entre países y regiones?
+-   ¿Cuál es el **componente tecnológico** para América y cuáles son sus elasticidades asociadas?
+
+------------------------------------------------------------------------
+
 ## Modelo Econométrico
 
 ### Función Cobb-Douglas
@@ -60,6 +68,19 @@ $$
 -   $D_r$: dummies regionales (América = referencia).
 -   $T_t$: dummies temporales.
 -   Interacciones: $D_r \times T_t$ permiten evaluar avance tecnológico diferencial.
+
+------------------------------------------------------------------------
+
+## Datos y variables
+
+-   Fuente: **Penn World Table 11.0**.
+-   Periodo: **2015–2020** (panel corto).
+-   Variables:
+    -   (rgdpna): PIB real a precios constantes (2021 USD),
+    -   (rkna): capital (servicios de capital) a precios constantes,
+    -   (emp): empleo (personas empleadas),
+    -   dummies de **continente**,
+    -   dummies de **tiempo** e **interacciones** región–tiempo.
 
 ------------------------------------------------------------------------
 
