@@ -87,12 +87,12 @@ $\ \alpha+\beta$
 
 Para capturar efectos regionales y la evolución del componente tecnológico:
 
-$\ lnQ_{it}=\beta_1lnL_{it} + \beta_2ln K_{it} + \gamma_i d_i + \delta_{it}(d_{it})t + \alpha_it + \varepsilon_{it} $
+$$lnQ_{it}=\beta_1lnL_{it} + \beta_2ln K_{it} + \gamma_i d_i + \delta_{it}(d_{it})t + \alpha_it + \varepsilon_{it}$$
 
 donde:
 
--   (d_i): dummies de continente (América base; Europa, Asia, África, Oceanía),
--   (t): dummies de periodo,
+-   $d_i$: dummies de continente (América base; Europa, Asia, África, Oceanía),
+-   $t$: dummies de periodo,
 -   términos de interacción región–tiempo para estudiar la **dinámica tecnológica**.
 
 ------------------------------------------------------------------------
@@ -114,7 +114,7 @@ donde:
 
 1.  Estimación inicial por **MCO / Pooled** para el modelo log-lineal.
 2.  **Prueba LM Breusch–Pagan**: Pooled vs. modelo con efectos.
-3.  **Prueba de Hausman**: FE vs. RE (correlación entre (x\_{it}) y el efecto inobservado).
+3.  **Prueba de Hausman**: FE vs. RE (correlación entre $x_{it}$ y el efecto inobservado).
 4.  **Prueba de Mundlak (CRE)**: inclusión de promedios por individuo de las regresoras.
 5.  Diagnóstico:
     -   **Heterocedasticidad** (White),
@@ -130,9 +130,9 @@ donde:
 
 Hipótesis:
 
-$\  H_0: \sigma\mu^2 = 0 \quad \text{(Pooled adecuado)} \\ H_1: \sigma\mu^2 \neq 0 \quad \text{(efectos presentes)} $
+$$  H_0: \sigma_{\mu}^2 = 0 \quad \text{(Pooled adecuado)} \\ H_1: \sigma_{\mu}^2 \neq 0 \quad \text{(efectos presentes)} $$
 
--   Estadístico (\chi\^2) grande y p-valor (\approx 0.0000).
+-   Estadístico $\chi^2$ grande y p-valor $\approx 0.0000$.
 -   Se **rechaza (H_0)**:
     -   el modelo **Pooled** se descarta,
     -   hay evidencia de **efectos específicos significativos**.
@@ -143,9 +143,9 @@ $\  H_0: \sigma\mu^2 = 0 \quad \text{(Pooled adecuado)} \\ H_1: \sigma\mu^2 \neq
 
 Hipótesis:
 
-$\ H_0: \text{Cov}(x_{it}, \mu_i) = 0 \quad \Rightarrow \text{RE consistente} \\ H_1: \text{Cov}(x_{it}, \mu_i) \neq 0 \quad \Rightarrow \text{RE inconsistente} $
+$$ H_0: \text{Cov}(x_{it}, \mu_i) = 0 \quad \Rightarrow \text{RE consistente} \\ H_1: \text{Cov}(x_{it}, \mu_i) \neq 0 \quad \Rightarrow \text{RE inconsistente}$$
 
--   Estadístico (\chi\^2) con p-valor (\approx 0.0000).
+-   Estadístico $\chi^2$ con p-valor $\approx 0.0000$.
 -   Se **rechaza (H_0)**:
     -   el estimador **RE es inconsistente**,
     -   se prefiere un enfoque tipo **FE / CRE**.
@@ -170,10 +170,10 @@ $\ H_0: \text{Cov}(x_{it}, \mu_i) = 0 \quad \Rightarrow \text{RE consistente} \\
 La idea Mundlak/CRE:
 
 -   Incluir en la regresión los **promedios por individuo** de las regresoras:
-    -   (\bar{k}\_i), (\bar{l}\_i), etc.
+    -   $\bar{k}_i$, $\bar{l}_i$, etc.
 -   Hipótesis:
 
-$ H_0: \gamma = 0 \quad \Rightarrow \text{no hay correlación entre promedios y } u_i $
+$$H_0: \gamma = 0 \quad \Rightarrow \text{no hay correlación entre promedios y } u_i$$
 
 -   Si los coeficientes de las medias son significativos:
     -   hay **correlación** entre efectos inobservados y regresores,
@@ -187,9 +187,8 @@ En los resultados:
 
 ## Resultados (Mundlak, resumen)
 
--   Elasticidad del capital (K): (\approx 0.65).
--   Elasticidad del empleo (L): (\approx 0.32).
--   **Retornos a escala**: (\alpha + \beta \approx 0.97) (cercanos a constantes).
+-   Elasticidad del capital (K): $\approx 0.65$.
+-   Elasticidad del empleo (L): $\approx 0.32$.
 -   Para **América**:
     -   la elasticidad del empleo es mayor (≈ 0.91),
     -   la elasticidad del capital no difiere significativamente del resto.
@@ -230,7 +229,6 @@ donde:
 -   El modelo Mundlak permite **controlar heterogeneidad inobservada** sin perder variación entre países.
 -   Se descarta el modelo Pooled y el modelo RE:
     -   la evidencia apoya la presencia de **correlación** entre regresores y efectos inobservados.
--   Las elasticidades de capital y empleo indican **rendimientos casi constantes** a escala.
 -   Existen diferencias marcadas en el **componente tecnológico** entre regiones:
     -   Europa y Asia avanzan más rápido,
     -   África presenta rezagos,

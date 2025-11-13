@@ -418,11 +418,11 @@ Pedro Monzón · Mario Castro · Kevin Molina
 <section id="modelo-extendido-con-heterogeneidad" class="slide level2">
 <h2>Modelo extendido con heterogeneidad</h2>
 <p>Para capturar efectos regionales y la evolución del componente tecnológico:</p>
-<p>$&nbsp;lnQ_{it}=<em>1lnL</em>{it} + <em>2ln K</em>{it} + <em>i d_i + </em>{it}(d_{it})t + <em>it + </em>{it} $</p>
+<p><span class="math display">\[lnQ_{it}=\beta_1lnL_{it} + \beta_2ln K_{it} + \gamma_i d_i + \delta_{it}(d_{it})t + \alpha_it + \varepsilon_{it}\]</span></p>
 <p>donde:</p>
 <ul>
-<li>(d_i): dummies de continente (América base; Europa, Asia, África, Oceanía),</li>
-<li>(t): dummies de periodo,</li>
+<li><span class="math inline">\(d_i\)</span>: dummies de continente (América base; Europa, Asia, África, Oceanía),</li>
+<li><span class="math inline">\(t\)</span>: dummies de periodo,</li>
 <li>términos de interacción región–tiempo para estudiar la <strong>dinámica tecnológica</strong>.</li>
 </ul>
 </section>
@@ -446,7 +446,7 @@ Pedro Monzón · Mario Castro · Kevin Molina
 <ol type="1">
 <li>Estimación inicial por <strong>MCO / Pooled</strong> para el modelo log-lineal.</li>
 <li><strong>Prueba LM Breusch–Pagan</strong>: Pooled vs.&nbsp;modelo con efectos.</li>
-<li><strong>Prueba de Hausman</strong>: FE vs.&nbsp;RE (correlación entre (x_{it}) y el efecto inobservado).</li>
+<li><strong>Prueba de Hausman</strong>: FE vs.&nbsp;RE (correlación entre <span class="math inline">\(x_{it}\)</span> y el efecto inobservado).</li>
 <li><strong>Prueba de Mundlak (CRE)</strong>: inclusión de promedios por individuo de las regresoras.</li>
 <li>Diagnóstico:
 <ul>
@@ -464,9 +464,9 @@ Pedro Monzón · Mario Castro · Kevin Molina
 <section id="prueba-lm-breuschpagan" class="slide level2">
 <h2>Prueba LM Breusch–Pagan</h2>
 <p>Hipótesis:</p>
-<p>$&nbsp; H_0: ^2 = 0 \ H_1: ^2 $</p>
+<p><span class="math display">\[  H_0: \sigma_{\mu}^2 = 0 \quad \text{(Pooled adecuado)} \\ H_1: \sigma_{\mu}^2 \neq 0 \quad \text{(efectos presentes)} \]</span></p>
 <ul>
-<li>Estadístico (^2) grande y p-valor ().</li>
+<li>Estadístico <span class="math inline">\(\chi^2\)</span> grande y p-valor <span class="math inline">\(\approx 0.0000\)</span>.</li>
 <li>Se <strong>rechaza (H_0)</strong>:
 <ul>
 <li>el modelo <strong>Pooled</strong> se descarta,</li>
@@ -477,9 +477,9 @@ Pedro Monzón · Mario Castro · Kevin Molina
 <section id="prueba-de-hausman" class="slide level2">
 <h2>Prueba de Hausman</h2>
 <p>Hipótesis:</p>
-<p>$&nbsp;H_0: (x_{it}, <em>i) = 0 \ H_1: (x</em>{it}, _i) $</p>
+<p><span class="math display">\[ H_0: \text{Cov}(x_{it}, \mu_i) = 0 \quad \Rightarrow \text{RE consistente} \\ H_1: \text{Cov}(x_{it}, \mu_i) \neq 0 \quad \Rightarrow \text{RE inconsistente}\]</span></p>
 <ul>
-<li>Estadístico (^2) con p-valor ().</li>
+<li>Estadístico <span class="math inline">\(\chi^2\)</span> con p-valor <span class="math inline">\(\approx 0.0000\)</span>.</li>
 <li>Se <strong>rechaza (H_0)</strong>:
 <ul>
 <li>el estimador <strong>RE es inconsistente</strong>,</li>
@@ -510,11 +510,11 @@ permitiendo:</li>
 <ul>
 <li>Incluir en la regresión los <strong>promedios por individuo</strong> de las regresoras:
 <ul>
-<li>({k}_i), ({l}_i), etc.</li>
+<li><span class="math inline">\(\bar{k}_i\)</span>, <span class="math inline">\(\bar{l}_i\)</span>, etc.</li>
 </ul></li>
 <li>Hipótesis:</li>
 </ul>
-<p>$ H_0: = 0 u_i $</p>
+<p><span class="math display">\[H_0: \gamma = 0 \quad \Rightarrow \text{no hay correlación entre promedios y } u_i\]</span></p>
 <ul>
 <li>Si los coeficientes de las medias son significativos:
 <ul>
@@ -530,9 +530,8 @@ permitiendo:</li>
 <section id="resultados-mundlak-resumen" class="slide level2">
 <h2>Resultados (Mundlak, resumen)</h2>
 <ul>
-<li>Elasticidad del capital (K): ().</li>
-<li>Elasticidad del empleo (L): ().</li>
-<li><strong>Retornos a escala</strong>: (+ ) (cercanos a constantes).</li>
+<li>Elasticidad del capital (K): <span class="math inline">\(\approx 0.65\)</span>.</li>
+<li>Elasticidad del empleo (L): <span class="math inline">\(\approx 0.32\)</span>.</li>
 <li>Para <strong>América</strong>:
 <ul>
 <li>la elasticidad del empleo es mayor (≈ 0.91),</li>
@@ -575,7 +574,6 @@ y_{it} &amp;= \beta_0 + \beta_1 k_{it} + \beta_2 l_{it}
 <ul>
 <li>la evidencia apoya la presencia de <strong>correlación</strong> entre regresores y efectos inobservados.</li>
 </ul></li>
-<li>Las elasticidades de capital y empleo indican <strong>rendimientos casi constantes</strong> a escala.</li>
 <li>Existen diferencias marcadas en el <strong>componente tecnológico</strong> entre regiones:
 <ul>
 <li>Europa y Asia avanzan más rápido,</li>
