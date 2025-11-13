@@ -1,109 +1,246 @@
 ---
-title: "econometria_II_pes — Presentación"
-subtitle: "Panel corto • Cobb–Douglas"
-author: "Autor(a): <tu nombre>"
+title: "Panel corto con función Cobb–Douglas"
+subtitle: "Econometría II · PES"
+author: "Pedro Monzón · Mario Castro · Kevin Molina"
 format:
-  revealjs:
-    theme: simple
-    slide-number: true
-    controls: true
-    progress: true
-    toc: false
-    transition: fade
-    incremental: false
-    hash: true
-    overview: true
-lang: es
-execute:
-  echo: false
-  warning: false
-  message: false
-bibliography: references.bib
+    revealjs:
+        theme: blood
 ---
-
-```{r}
-#| label: setup
-req <- c("tidyverse","readxl","plm","fixest","lmtest","sandwich","modelsummary","janitor","broom","broom.helpers")
-new <- setdiff(req, rownames(installed.packages()))
-if(length(new)) install.packages(new, repos = "https://cloud.r-project.org")
-invisible(lapply(req, library, character.only = TRUE))
-
-data_path <- "/mnt/data/datat_panel_corto.xlsx"
-dat <- readxl::read_excel(data_path) |> janitor::clean_names()
-
-# Heurística para nombres
-guess <- function(nms, cands){ nm <- nms[tolower(nms) %in% tolower(cands)]; if(length(nm)) nm[[1]] else NA_character_ }
-id_col   <- guess(names(dat), c("id","i","entidad","firm","country","region","sector"))
-time_col <- guess(names(dat), c("t","time","year","anio","ano","period"))
-q_col    <- guess(names(dat), c("rgndp","pib","q","output","y"))
-l_col    <- guess(names(dat), c("emp","l","labor","empleo"))
-k_col    <- guess(names(dat), c("rnna","k","capital"))
-stopifnot(!is.na(id_col), !is.na(time_col), !is.na(q_col), !is.na(l_col), !is.na(k_col))
-
-dat <- dat |>
-  rename(id = all_of(id_col), time = all_of(time_col),
-         rgndp = all_of(q_col), emp = all_of(l_col), rnna = all_of(k_col)) |>
-  mutate(ln_q = log(rgndp), ln_l = log(emp), ln_k = log(rnna))
-
-pdat <- plm::pdata.frame(dat, index = c("id","time"))
-pdat$time_f <- factor(pdat$time)
-```
 
 ## Introducción
 
-- **Problema:** estimar elasticidades \\(\\alpha\\) y \\(\\beta\\) en Cobb–Douglas.
-- **Justificación:** medir retornos a escala y productividad.
-- **Objetivo:** seleccionar un modelo óptimo (FE/RE/Mundlak) con diagnóstico completo.
+-   Se analiza una función de producción tipo **Cobb–Douglas** con datos de panel corto (2015–2020).
+-   Unidades de análisis: **países** agrupados por región (América, Europa, Asia, África, Oceanía).
+-   Fuente de datos: **Penn World Table 11.0**.
+-   Variable dependiente: **PIB real**.
+-   Variables principales: **capital** y **empleo**, más controles de heterogeneidad.
 
----
+------------------------------------------------------------------------
 
-## Modelo (teoría)
+## Problemas de investigación
 
-\\[ \\ln Q_{it} = c_i + \\tau_t + \\alpha \\ln L_{it} + \\beta \\ln K_{it} + u_{it}. \\]
+-   ¿Cuál es la **elasticidad de producción** respecto al empleo $\ (L)$, al capital $(K)$ y a la PTF $(A_{it})$ en una función Cobb–Douglas, usando un panel corto?
+-   ¿Existe **heterogeneidad** en el avance tecnológico entre países y regiones?
+-   ¿Cuál es el **componente tecnológico** para América y cuáles son sus elasticidades asociadas?
 
-- Heterogeneidad inobservada: \\(c_i\\).
-- Shocks comunes: \\(\\tau_t\\).
-- Retornos a escala: \\(\\alpha+\\beta\\).
+------------------------------------------------------------------------
 
----
+## Justificación
 
-## Metodología (datos)
+-   Las elasticidades permiten evaluar la **eficiencia en el uso de recursos** y los **retornos a escala**.
+-   Son relevantes para:
+    -   decisiones de **política económica**,
+    -   análisis de **competitividad internacional**,
+    -   y decisiones de **inversión** en entornos macroeconómicos abiertos.
+-   Los datos tipo panel permiten **controlar heterogeneidad inobservada** entre países.
 
-- Panel corto: cluster por `id` (dos vías si \\(T\\) lo permite).
-- Comparar: Pooled, FE, RE y **Mundlak (CRE)**.
-- Pruebas: LM (RE vs pooled), F (FE vs pooled), **Hausman**, **Wooldridge AR(1)**, **White HC**, **Pesaran CD**.
+------------------------------------------------------------------------
 
-```{r}
-m_fe <- plm(ln_q ~ ln_l + ln_k, data = pdat, model = "within", effect = "individual")
-m_re <- plm(ln_q ~ ln_l + ln_k, data = pdat, model = "random", effect = "individual")
+## Objetivo
 
-# Hausman
-haus <- phtest(m_fe, m_re)
-haus
+-   Estimar y contrastar diferentes modelos para describir el PIB real (Q) como función de:
+    -   **empleo** (L),
+    -   **capital** (K),
+    -   y controles de heterogeneidad (región y tiempo).
+-   Comparar:
+    -   **Pooled**,\
+    -   **Efectos Fijos (FE)**,\
+    -   **Efectos Aleatorios (RE)**,\
+    -   **Mundlak (CRE)**.
+-   Seleccionar un modelo **consistente y bien especificado** para el panel corto.
+
+------------------------------------------------------------------------
+
+## Modelo base: Cobb–Douglas
+
+La función de producción es:
+
+$\ Q_{it} = A_{it} K_{it}^{\alpha} L_{it}^{\beta} e^{\varepsilon_{it}}$
+
+donde:
+
+-   $Q_{it}$: producción (PIB real) del país (i) en el período (t),
+-   $K_{it}$: capital,
+-   $L_{it}$: empleo,
+-   $A_{it}$: tecnología o PTF,
+-   $\varepsilon_{it}$: término de error.
+
+------------------------------------------------------------------------
+
+## Modelo lineal en logaritmos
+
+Aplicando logaritmos:
+
+$\ ln Q_{it} = A_{it} + \alpha ln K_{it} + \beta lnL_{it} + c_i + \varepsilon_{it}$
+
+-   $c_i$: efecto inobservado específico del país (i),
+-   $\alpha$: elasticidad de la producción respecto al empleo,
+-   $\beta$: elasticidad de la producción respecto al capital.
+
+**Retornos a escala:**
+
+$\ \alpha+\beta$
+
+------------------------------------------------------------------------
+
+## Modelo extendido con heterogeneidad
+
+Para capturar efectos regionales y la evolución del componente tecnológico:
+
+$\ lnQ_{it}=\beta_1lnL_{it} + \beta_2ln K_{it} + \gamma_i d_i + \delta_{it}(d_{it})t + \alpha_it + \varepsilon_{it} $
+
+donde:
+
+-   (d_i): dummies de continente (América base; Europa, Asia, África, Oceanía),
+-   (t): dummies de periodo,
+-   términos de interacción región–tiempo para estudiar la **dinámica tecnológica**.
+
+------------------------------------------------------------------------
+
+## Datos y variables
+
+-   Fuente: **Penn World Table 11.0**.
+-   Periodo: **2015–2020** (panel corto).
+-   Variables:
+    -   (rgdpna): PIB real a precios constantes (2021 USD),
+    -   (rkna): capital (servicios de capital) a precios constantes,
+    -   (emp): empleo (personas empleadas),
+    -   dummies de **continente**,
+    -   dummies de **tiempo** e **interacciones** región–tiempo.
+
+------------------------------------------------------------------------
+
+## Metodología econométrica (resumen)
+
+1.  Estimación inicial por **MCO / Pooled** para el modelo log-lineal.
+2.  **Prueba LM Breusch–Pagan**: Pooled vs. modelo con efectos.
+3.  **Prueba de Hausman**: FE vs. RE (correlación entre (x\_{it}) y el efecto inobservado).
+4.  **Prueba de Mundlak (CRE)**: inclusión de promedios por individuo de las regresoras.
+5.  Diagnóstico:
+    -   **Heterocedasticidad** (White),
+    -   **Autocorrelación** (Wooldridge AR(1)).
+6.  Selección del **modelo final** considerando:
+    -   consistencia,
+    -   tratamiento de heterogeneidad,
+    -   y estructura de varianzas–covarianzas.
+
+------------------------------------------------------------------------
+
+## Prueba LM Breusch–Pagan
+
+Hipótesis:
+
+$\  H_0: \sigma\mu^2 = 0 \quad \text{(Pooled adecuado)} \\ H_1: \sigma\mu^2 \neq 0 \quad \text{(efectos presentes)} $
+
+-   Estadístico (\chi\^2) grande y p-valor (\approx 0.0000).
+-   Se **rechaza (H_0)**:
+    -   el modelo **Pooled** se descarta,
+    -   hay evidencia de **efectos específicos significativos**.
+
+------------------------------------------------------------------------
+
+## Prueba de Hausman
+
+Hipótesis:
+
+$\ H_0: \text{Cov}(x_{it}, \mu_i) = 0 \quad \Rightarrow \text{RE consistente} \\ H_1: \text{Cov}(x_{it}, \mu_i) \neq 0 \quad \Rightarrow \text{RE inconsistente} $
+
+-   Estadístico (\chi\^2) con p-valor (\approx 0.0000).
+-   Se **rechaza (H_0)**:
+    -   el estimador **RE es inconsistente**,
+    -   se prefiere un enfoque tipo **FE / CRE**.
+
+------------------------------------------------------------------------
+
+## Heterocedasticidad y autocorrelación
+
+-   Se detecta evidencia de:
+    -   **heterocedasticidad** entre secciones transversales,
+    -   posible **autocorrelación** de tipo AR(1).
+-   Se opta por estimar el modelo con:
+    -   **matriz de covarianzas robustas tipo White cross-section**,\
+        permitiendo:
+    -   sacrificar eficiencia,
+    -   pero mantener **consistencia** de los estimadores.
+
+------------------------------------------------------------------------
+
+## Enfoque Mundlak (CRE)
+
+La idea Mundlak/CRE:
+
+-   Incluir en la regresión los **promedios por individuo** de las regresoras:
+    -   (\bar{k}\_i), (\bar{l}\_i), etc.
+-   Hipótesis:
+
+$ H_0: \gamma = 0 \quad \Rightarrow \text{no hay correlación entre promedios y } u_i $
+
+-   Si los coeficientes de las medias son significativos:
+    -   hay **correlación** entre efectos inobservados y regresores,
+    -   el modelo captura mejor la **heterogeneidad individual**.
+
+En los resultados:
+
+-   Se encuentra que los promedios **sí son relevantes**, por lo que se conserva el modelo Mundlak como **modelo final**.
+
+------------------------------------------------------------------------
+
+## Resultados (Mundlak, resumen)
+
+-   Elasticidad del capital (K): (\approx 0.65).
+-   Elasticidad del empleo (L): (\approx 0.32).
+-   **Retornos a escala**: (\alpha + \beta \approx 0.97) (cercanos a constantes).
+-   Para **América**:
+    -   la elasticidad del empleo es mayor (≈ 0.91),
+    -   la elasticidad del capital no difiere significativamente del resto.
+-   La tecnología (A) muestra fuerte **heterogeneidad regional**:
+    -   Europa y Asia: niveles y avances tecnológicos más altos,
+    -   África: rezagos importantes,
+    -   América: progreso tecnológico más moderado, concentrado en intercepto y efecto temporal común.
+
+------------------------------------------------------------------------
+
+## Modelo final (especificación)
+
+Modelo Mundlak con errores robustos (White) y panel corto:
+
+```{=tex}
+\begin{aligned}
+y_{it} &= \beta_0 + \beta_1 k_{it} + \beta_2 l_{it}
++ \beta_3 ASIA_i + \beta_4 AFRICA_i + \beta_5 EUROPE_i + \beta_6 OCEANIA_i \\
+&\quad + \theta_1 \bar{k}_i + \theta_2 \bar{l}_i \\
+&\quad + \sum_{s=2}^{6} \gamma^{ASIA}_s (ASIA_i \cdot D_{st})
++ \sum_{s=2}^{6} \gamma^{EUROPE}_s (EUROPE_i \cdot D_{st}) \\
+&\quad + \sum_{s=2}^{6} \gamma^{AFRICA}_s (AFRICA_i \cdot D_{st})
++ \sum_{s=2}^{6} \gamma^{OCEANIA}_s (OCEANIA_i \cdot D_{st}) \\
+&\quad + \sum_{s=2}^{6} \lambda_s D_{st} + u_{it},
+\end{aligned}
 ```
+donde:
 
----
+-   $(y_{it} = \ln Q_{it})$,
+-   $(k_{it} = \ln K_{it})$,
+-   $(l_{it} = \ln L_{it})$,
+-   $(D_{st}): dummies\:de\:tiempo\:para\:(t=2,\dots,6)$.
 
-## Resultados (resumen)
-
-```{r}
-vc <- function(mod) vcovHC(mod, type="HC1", cluster="group")
-tab <- modelsummary::msummary(list("FE"=m_fe,"RE"=m_re), vcov=list(vc,vc), stars=TRUE, output="data.frame")
-knitr::kable(tab, format="html")
-```
-
-**Guía de lectura:** enfoque en signos, magnitudes y \\(\\alpha+\\beta\\).
-
----
+------------------------------------------------------------------------
 
 ## Conclusiones
 
-- Modelo elegido (criterios: Hausman, Mundlak, diagnóstico).
-- Retornos a escala estimados.
-- Implicaciones para política o gestión.
+-   El modelo Mundlak permite **controlar heterogeneidad inobservada** sin perder variación entre países.
+-   Se descarta el modelo Pooled y el modelo RE:
+    -   la evidencia apoya la presencia de **correlación** entre regresores y efectos inobservados.
+-   Las elasticidades de capital y empleo indican **rendimientos casi constantes** a escala.
+-   Existen diferencias marcadas en el **componente tecnológico** entre regiones:
+    -   Europa y Asia avanzan más rápido,
+    -   África presenta rezagos,
+    -   América muestra un progreso intermedio.
 
----
+------------------------------------------------------------------------
 
 ## Referencias
 
-- Wooldridge (2010); Baltagi (2021); Mundlak (1978); Arellano (2003).
+-   Wooldridge, J. M. (2015). *Introductory Econometrics: A Modern Approach* (6th ed.). Cengage Learning.
+-   Gujarati, D. N. (2011). *Econometría* (5.ª ed.). McGraw-Hill Interamericana.
+-   Greene, W. H. (2018). *Econometric Analysis* (8th ed.). Pearson.
+-   Cameron, A. C., & Trivedi, P. K. (2005). *Microeconometrics: Methods and Applications*. Cambridge University Press.

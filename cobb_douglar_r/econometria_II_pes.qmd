@@ -150,7 +150,7 @@ El ajuste Mundlak funciona bajo la hipótesis $\ H_0: \gamma =0$, en la que los 
 
 Interpretación: En este caso se determinó que sí existe dicha correlación y se conserva como modelo final la misma especificación como modelo, puesto que permite controlar la heterogeneidad detectada.
 
-Los resultados muestran que la elasticidad del capital es cercana a 0.65 y la del empleo a 0.32, lo que sugiere rendimientos casi constantes. En America, la elasticidad del empleo es mucho mayor (aprox. 0.91), mientras que la del capital no difiere del resto. El componente tecnologico evidencia una fuerte heterogeneidad: Europa y Asia presentan niveles y avances mas altos, mientras Africa mantiene rezagos importantes. Para America, la tecnologia se concentra en el intercepto y el efecto temporal comun, lo que indica un progreso mas moderado frente a otras regiones.
+Los resultados muestran que la elasticidad del capital es cercana a 0.65 y la del empleo a 0.32. En America, la elasticidad del empleo es mucho mayor (aprox. 0.91), mientras que la del capital no difiere del resto. El componente tecnologico evidencia una fuerte heterogeneidad: Europa y Asia presentan niveles y avances mas altos, mientras Africa mantiene rezagos importantes. Para America, la tecnologia se concentra en el intercepto y el efecto temporal comun, lo que indica un progreso mas moderado frente a otras regiones.
 
 # Referencias
 
