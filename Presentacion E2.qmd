@@ -10,7 +10,7 @@ format:
     theme: "dracula"
     slide-number: true
     transition: "fade"
-    width: 1300
+    width: 1500
     height: 800
     scrollable: true
 lang: es  
@@ -146,9 +146,28 @@ Incluye promedios temporales de regresores ( $\bar{K}_i$ , $\bar{L}_i$) para con
 
 ## Modelo Final: Estimación Mundlak
 
-$$
-y_{it} = \beta_0 + \beta_1 k_{it} + \beta_2 l_{it} + \sum_{r=1}^5 \gamma_r D_r + \theta_1 \bar{k}_i + \theta_2 \bar{l}_i + \sum_{s=2}^6 \lambda_s T_s 
-$$ $$+ \sum_{r,s} \gamma_{rs} (D_r \cdot D_{st}) + u_{it}$$
+
+Modelo Mundlak con errores robustos (White) y panel corto:
+
+```{=tex}
+\begin{aligned}
+y_{it} &= \beta_0 + \beta_1 k_{it} + \beta_2 l_{it}
++ \beta_3 ASIA_i + \beta_4 AFRICA_i + \beta_5 EUROPE_i + \beta_6 OCEANIA_i \\
+&\quad + \theta_1 \bar{k}_i + \theta_2 \bar{l}_i \\
+&\quad + \sum_{s=2}^{6} \gamma^{ASIA}_s (ASIA_i \cdot D_{st})
++ \sum_{s=2}^{6} \gamma^{EUROPE}_s (EUROPE_i \cdot D_{st}) \\
+&\quad + \sum_{s=2}^{6} \gamma^{AFRICA}_s (AFRICA_i \cdot D_{st})
++ \sum_{s=2}^{6} \gamma^{OCEANIA}_s (OCEANIA_i \cdot D_{st}) \\
+&\quad + \sum_{s=2}^{6} \lambda_s D_{st} + u_{it},
+\end{aligned}
+```
+donde:
+
+-   $(y_{it} = \ln Q_{it})$,
+-   $(k_{it} = \ln K_{it})$,
+-   $(l_{it} = \ln L_{it})$,
+-   $(D_{st}): dummies\:de\:tiempo\:para\:(t=2,\dots,6)$.
+
 
 Con errores robustos White.
 
@@ -193,17 +212,15 @@ Con errores robustos White.
 
 ------------------------------------------------------------------------
 
-## Interpretación Final
+## Conclusiones
 
-### Hallazgos principales:
-
-1.  **Rendimientos casi constantes a escala**: $\alpha + \beta \approx 0.97$
-2.  **América**: alta elasticidad del trabajo (\~0.91), baja del capital.
-3.  **Europa y Asia**: líderes en productividad y crecimiento tecnológico.
-4.  **África**: rezago tecnológico, aunque con mejoras recientes.
-5.  **Oceanía**: sin ventaja significativa respecto a América.
-
-> El modelo Mundlak con errores robustos es el más adecuado para estos datos.
+-   El modelo Mundlak permite **controlar heterogeneidad inobservada** sin perder variación entre países.
+-   Se descarta el modelo Pooled y el modelo RE:
+    -   la evidencia apoya la presencia de **correlación** entre regresores y efectos inobservados.
+-   Existen diferencias marcadas en el **componente tecnológico** entre regiones:
+    -   Europa y Asia avanzan más rápido,
+    -   África presenta rezagos,
+    -   América muestra un progreso intermedio.
 
 ------------------------------------------------------------------------
 

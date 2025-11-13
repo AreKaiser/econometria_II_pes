@@ -6,8 +6,8 @@
 <script src="Presentacion E2_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="Presentacion E2_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="Presentacion E2_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="Presentacion E2_files/libs/quarto-html/quarto-syntax-highlighting-dark-2fef5ea3f8957b3e4ecc936fc74692ca.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.32">
+<link href="Presentacion E2_files/libs/quarto-html/quarto-syntax-highlighting-dark-b651517ce65839d647a86e2780455cfb.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.24">
 
   <meta name="author" content="Pedro Monzón">
   <meta name="author" content="Mario Castro">
@@ -31,7 +31,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="Presentacion E2_files/libs/revealjs/dist/theme/quarto-175ec1c0ea92bc532c45781632c4e35e.css">
+  <link rel="stylesheet" href="Presentacion E2_files/libs/revealjs/dist/theme/quarto-a1d3734469117662d4af4794742e8c15.css">
   <link href="Presentacion E2_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="Presentacion E2_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="Presentacion E2_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -296,9 +296,24 @@ La especificación <strong>Mundlak</strong> es válida para controlar heterogene
 </section>
 <section id="modelo-final-estimación-mundlak" class="slide level2">
 <h2>Modelo Final: Estimación Mundlak</h2>
-<p><span class="math display">\[
-y_{it} = \beta_0 + \beta_1 k_{it} + \beta_2 l_{it} + \sum_{r=1}^5 \gamma_r D_r + \theta_1 \bar{k}_i + \theta_2 \bar{l}_i + \sum_{s=2}^6 \lambda_s T_s
-\]</span> <span class="math display">\[+ \sum_{r,s} \gamma_{rs} (D_r \cdot D_{st}) + u_{it}\]</span></p>
+<p>Modelo Mundlak con errores robustos (White) y panel corto:</p>
+<span class="math display">\[\begin{aligned}
+y_{it} &amp;= \beta_0 + \beta_1 k_{it} + \beta_2 l_{it}
++ \beta_3 ASIA_i + \beta_4 AFRICA_i + \beta_5 EUROPE_i + \beta_6 OCEANIA_i \\
+&amp;\quad + \theta_1 \bar{k}_i + \theta_2 \bar{l}_i \\
+&amp;\quad + \sum_{s=2}^{6} \gamma^{ASIA}_s (ASIA_i \cdot D_{st})
++ \sum_{s=2}^{6} \gamma^{EUROPE}_s (EUROPE_i \cdot D_{st}) \\
+&amp;\quad + \sum_{s=2}^{6} \gamma^{AFRICA}_s (AFRICA_i \cdot D_{st})
++ \sum_{s=2}^{6} \gamma^{OCEANIA}_s (OCEANIA_i \cdot D_{st}) \\
+&amp;\quad + \sum_{s=2}^{6} \lambda_s D_{st} + u_{it},
+\end{aligned}\]</span>
+<p>donde:</p>
+<ul>
+<li><span class="math inline">\((y_{it} = \ln Q_{it})\)</span>,</li>
+<li><span class="math inline">\((k_{it} = \ln K_{it})\)</span>,</li>
+<li><span class="math inline">\((l_{it} = \ln L_{it})\)</span>,</li>
+<li><span class="math inline">\((D_{st}): dummies\:de\:tiempo\:para\:(t=2,\dots,6)\)</span>.</li>
+</ul>
 <p>Con errores robustos White.</p>
 </section>
 <section id="elasticidades-estimadas" class="slide level2">
@@ -308,24 +323,20 @@ y_{it} = \beta_0 + \beta_1 k_{it} + \beta_2 l_{it} + \sum_{r=1}^5 \gamma_r D_r +
 <tr class="header">
 <th>Factor</th>
 <th>Elasticidad</th>
-<th>Interpretación</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>Trabajo (global)</td>
 <td>0.32</td>
-<td>Rendimientos casi constantes</td>
 </tr>
 <tr class="even">
 <td>Capital (global)</td>
 <td>0.65</td>
-<td><span class="math inline">\(\alpha + \beta \approx 0.97\)</span></td>
 </tr>
 <tr class="odd">
 <td>Trabajo (América)</td>
 <td>~0.91</td>
-<td>Mayor dependencia del empleo</td>
 </tr>
 </tbody>
 </table>
@@ -409,30 +420,24 @@ y_{it} = \beta_0 + \beta_1 k_{it} + \beta_2 l_{it} + \sum_{r=1}^5 \gamma_r D_r +
 </tbody>
 </table>
 <blockquote>
-<p>✅ Europa muestra avance tecnológico sostenido.<br>
+<p>Europa muestra avance tecnológico sostenido.<br>
 África mejora en 2020, pero desde niveles bajos.</p>
 </blockquote>
 </section>
-<section id="interpretación-final" class="slide level2 scrollable">
-<h2>Interpretación Final</h2>
-<h3 id="hallazgos-principales">Hallazgos principales:</h3>
-<ol type="1">
-<li><strong>Rendimientos casi constantes a escala</strong>: <span class="math inline">\(\alpha + \beta \approx 0.97\)</span></li>
-<li><strong>América</strong>: alta elasticidad del trabajo (~0.91), baja del capital.</li>
-<li><strong>Europa y Asia</strong>: líderes en productividad y crecimiento tecnológico.</li>
-<li><strong>África</strong>: rezago tecnológico, aunque con mejoras recientes.</li>
-<li><strong>Oceanía</strong>: sin ventaja significativa respecto a América.</li>
-</ol>
-<blockquote>
-<p>El modelo Mundlak con errores robustos es el más adecuado para estos datos.</p>
-</blockquote>
-</section>
-<section id="recomendaciones" class="slide level2">
-<h2>Recomendaciones</h2>
+<section id="conclusiones" class="slide level2">
+<h2>Conclusiones</h2>
 <ul>
-<li>Políticas en América deberían enfocarse en <strong>capital humano y físico</strong>.</li>
-<li>África necesita inversión en <strong>infraestructura tecnológica</strong>.</li>
-<li>Monitorear convergencia regional mediante modelos dinámicos (GMM).</li>
+<li>El modelo Mundlak permite <strong>controlar heterogeneidad inobservada</strong> sin perder variación entre países.</li>
+<li>Se descarta el modelo Pooled y el modelo RE:
+<ul>
+<li>la evidencia apoya la presencia de <strong>correlación</strong> entre regresores y efectos inobservados.</li>
+</ul></li>
+<li>Existen diferencias marcadas en el <strong>componente tecnológico</strong> entre regiones:
+<ul>
+<li>Europa y Asia avanzan más rápido,</li>
+<li>África presenta rezagos,</li>
+<li>América muestra un progreso intermedio.</li>
+</ul></li>
 </ul>
 </section>
 <section id="referencias" class="slide level2">
@@ -625,7 +630,7 @@ y_{it} = \beta_0 + \beta_1 k_{it} + \beta_2 l_{it} + \sum_{r=1}^5 \gamma_r D_r +
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
-        width: 1300,
+        width: 1500,
 
         height: 800,
 
@@ -633,7 +638,7 @@ y_{it} = \beta_0 + \beta_1 k_{it} + \beta_2 l_{it} + \sum_{r=1}^5 \gamma_r D_r +
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -707,13 +712,14 @@ y_{it} = \beta_0 + \beta_1 k_{it} + \beta_2 l_{it} + \sum_{r=1}^5 \gamma_r D_r +
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy
