@@ -100,7 +100,7 @@ Errores estándar robustos tipo **White cross-section**.
 
 ## Prueba de Hausman
 
--   $H_0$ : \$\\text{Cov}(x\_{it}, \\mu_i) = 0 \$ → RE consistente\
+-   $H_0$ : $\text{Cov}(x_{it}, \mu_i) = 0$ → RE consistente\
 -   $H_1$: $\text{Cov}(x_{it}, \mu_i) \neq 0$ → FE preferido
 
 **Resultado**: - $\chi^2 = 27.81$ , p-valor = 0.0000
