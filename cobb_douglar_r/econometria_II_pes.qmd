@@ -1,5 +1,5 @@
 ---
-title: "Trabajo y presentación final — Panel corto con función Cobb–Douglas"
+title: "Panel corto con función Cobb–Douglas"
 subtitle: "econometria II pes"
 author: "Autores: Pedro Monzón, Mario Castro, Kevin Molina "
 format: pdf
