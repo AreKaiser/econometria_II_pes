@@ -14,14 +14,13 @@ format:
     height: 800
     scrollable: true
 lang: es  
-
 ---
 
 ## Introducción
 
 ### Objetivo del estudio
 
-Analizar las diferencias en el crecimiento tecnológico \$ A\_{it} \$ sobre el PIB real entre regiones (2015–2020) mediante un modelo de datos panel corto.
+Analizar las diferencias en el crecimiento tecnológico $A_{it}$ sobre el PIB real entre regiones (2015–2020) mediante un modelo de datos panel corto.
 
 -   **Base de datos**: Penn World Table 11.0.
 -   **Variables**:
@@ -128,8 +127,7 @@ Incluye promedios temporales de regresores ( $\bar{K}_i$ , $\bar{L}_i$) para con
 
 $$
 y_{it} = \beta_0 + \beta_1 k_{it} + \beta_2 l_{it} + \sum_{r=1}^5 \gamma_r D_r + \theta_1 \bar{k}_i + \theta_2 \bar{l}_i + \sum_{s=2}^6 \lambda_s T_s 
-$$
-$$+ \sum_{r,s} \gamma_{rs} (D_r \cdot D_{st}) + u_{it}$$
+$$ $$+ \sum_{r,s} \gamma_{rs} (D_r \cdot D_{st}) + u_{it}$$
 
 Con errores robustos White.
 
