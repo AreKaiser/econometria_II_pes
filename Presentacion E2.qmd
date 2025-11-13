@@ -1,0 +1,203 @@
+---
+title: "Análisis de Crecimiento Tecnológico por Regiones"
+subtitle: "Modelo Panel Corto con Función Cobb-Douglas"
+author: 
+  - Pedro Monzón
+  - Mario Castro
+  - Kevin Molina
+format:
+  revealjs:
+    theme: "dracula"
+    slide-number: true
+    transition: "fade"
+    width: 1300
+    height: 800
+    scrollable: true
+lang: es  
+
+---
+
+## Introducción
+
+### Objetivo del estudio
+
+Analizar las diferencias en el crecimiento tecnológico \$ A\_{it} \$ sobre el PIB real entre regiones (2015–2020) mediante un modelo de datos panel corto.
+
+-   **Base de datos**: Penn World Table 11.0.
+-   **Variables**:
+    -   $\ln Q_{it}$: logaritmo del PIB real.
+    -   $\ln K_{it}$: capital físico.
+    -   $\ln L_{it}$: empleo.
+    -   Dummies por continente y año.
+
+------------------------------------------------------------------------
+
+## Modelo Econométrico
+
+### Función Cobb-Douglas
+
+$$
+Q_{it} = A_{it} K_{it}^{\alpha} L_{it}^{\beta} e^{\varepsilon_{it}}
+$$
+
+Transformación logarítmica:
+
+$$
+\ln Q_{it} = \ln A_{it} + \alpha \ln K_{it} + \beta \ln L_{it} + c_i + \varepsilon_{it}
+$$
+
+Donde $c_i$ captura heterogeneidad inobservable entre países.
+
+------------------------------------------------------------------------
+
+## Especificación Extendida
+
+Incorporamos efectos fijos por región y tiempo:
+
+$$
+\ln Q_{it} = \beta_1 \ln L_{it} + \beta_2 \ln K_{it} + \sum_{r} \gamma_r D_r + \sum_t \delta_t T_t + \varepsilon_{it}
+$$
+
+-   $D_r$: dummies regionales (América = referencia).
+-   $T_t$: dummies temporales.
+-   Interacciones: $D_r \times T_t$ permiten evaluar avance tecnológico diferencial.
+
+------------------------------------------------------------------------
+
+## Metodología: Secuencia de Pruebas
+
+1.  **Breusch-Pagan**: ¿efectos individuales significativos?
+2.  **Hausman**: ¿efectos fijos (FE) vs aleatorios (RE)?
+3.  **Mundlak**: ¿controlar heterogeneidad no observada?
+4.  **Diagnósticos**: heterocedasticidad y autocorrelación.
+
+Errores estándar robustos tipo **White cross-section**.
+
+------------------------------------------------------------------------
+
+## Resultados: Significancia Global
+
+| Variable | Coeficiente | Estadístico-t | p-valor |
+|----------|-------------|---------------|---------|
+| $\ln L$  | 0.9399      | 50.39         | 0.0000  |
+| $\ln K$  | 1.0945      | 3.72          | 0.0002  |
+
+> ✅ Todas las variables son estadísticamente significativas.\
+> Los signos son coherentes con la teoría: producción crece con trabajo y capital.
+
+------------------------------------------------------------------------
+
+## Prueba Breusch-Pagan
+
+-   $H_0$ : $\sigma_\mu^2 = 0$ → modelo *pooled* adecuado\
+-   $H_1$: $\sigma_\mu^2 > 0$ → efectos individuales significativos
+
+**Resultado**: - $\chi^2 = 2048.16$, p-valor = 0.0000
+
+> ❌ Se rechaza $H_0$.\
+> No es válido usar MCO agrupado. Hay heterogeneidad entre países.
+
+------------------------------------------------------------------------
+
+## Prueba de Hausman
+
+-   $H_0$ : \$\\text{Cov}(x\_{it}, \\mu_i) = 0 \$ → RE consistente\
+-   $H_1$: $\text{Cov}(x_{it}, \mu_i) \neq 0$ → FE preferido
+
+**Resultado**: - $\chi^2 = 27.81$ , p-valor = 0.0000
+
+> ❌ Se rechaza $H_0$. Los efectos aleatorios son inconsistentes. Usamos **efectos fijos (FE)**.
+
+------------------------------------------------------------------------
+
+## Prueba de Mundlak
+
+Incluye promedios temporales de regresores ( $\bar{K}_i$ , $\bar{L}_i$) para controlar heterogeneidad.
+
+-   $H_0$: $\gamma = 0$ → no hay correlación con efectos fijos\
+-   Si se rechaza, se mantiene especificación con dummies.
+
+**Resultados clave**: - $\text{LNEMPB}$ (promedio empleo): p-valor = 0.00018 → significativo - $\text{LNRKNAB}$ (promedio capital): no significativo
+
+> ✅ Se rechaza $H_0$ Existe correlación.\
+> La especificación **Mundlak** es válida para controlar heterogeneidad.
+
+------------------------------------------------------------------------
+
+## Modelo Final: Estimación Mundlak
+
+$$
+y_{it} = \beta_0 + \beta_1 k_{it} + \beta_2 l_{it} + \sum_{r=1}^5 \gamma_r D_r + \theta_1 \bar{k}_i + \theta_2 \bar{l}_i + \sum_{s=2}^6 \lambda_s T_s 
+$$
+$$+ \sum_{r,s} \gamma_{rs} (D_r \cdot D_{st}) + u_{it}$$
+
+Con errores robustos White.
+
+------------------------------------------------------------------------
+
+## Elasticidades Estimadas
+
+| Factor            | Elasticidad | Interpretación                |
+|-------------------|-------------|-------------------------------|
+| Trabajo (global)  | 0.32        | Rendimientos casi constantes  |
+| Capital (global)  | 0.65        | $\alpha + \beta \approx 0.97$ |
+| Trabajo (América) | \~0.91      | Mayor dependencia del empleo  |
+
+> América muestra mayor sensibilidad del PIB al empleo, sugiriendo menor capitalización.
+
+------------------------------------------------------------------------
+
+## Tecnología por Región
+
+| Región  | Intercepto ($\gamma_r$) | Crecimiento anual ($\gamma_{rs}$) |
+|---------|-------------------------|-----------------------------------|
+| Asia    | 0.360 (p=0.087)         | Positivo, creciente               |
+| Europa  | 0.733 (p=0.0003)        | Alto y acelerado                  |
+| África  | -1.012 (p\<0.001)       | Rezago persistente                |
+| Oceanía | 0.551 (p=0.203)         | No significativo                  |
+
+> Europa y Asia lideran; África enfrenta desventajas estructurales.
+
+------------------------------------------------------------------------
+
+## Interacciones Temporales: Progreso Tecnológico
+
+| Interacción    | Coeficiente | p-valor |
+|----------------|-------------|---------|
+| (T=6)\*EUROPE  | 0.1239      | 0.0096  |
+| (T=5)\*ASIA    | 0.0476      | 0.0817  |
+| (T=6)\*AFRICA  | 0.0961      | 0.0120  |
+| (T=5)\*OCEANIA | 0.0572      | 0.0747  |
+
+> ✅ Europa muestra avance tecnológico sostenido.\
+> África mejora en 2020, pero desde niveles bajos.
+
+------------------------------------------------------------------------
+
+## Interpretación Final
+
+### Hallazgos principales:
+
+1.  **Rendimientos casi constantes a escala**: $\alpha + \beta \approx 0.97$
+2.  **América**: alta elasticidad del trabajo (\~0.91), baja del capital.
+3.  **Europa y Asia**: líderes en productividad y crecimiento tecnológico.
+4.  **África**: rezago tecnológico, aunque con mejoras recientes.
+5.  **Oceanía**: sin ventaja significativa respecto a América.
+
+> El modelo Mundlak con errores robustos es el más adecuado para estos datos.
+
+------------------------------------------------------------------------
+
+## Recomendaciones
+
+-   Políticas en América deberían enfocarse en **capital humano y físico**.
+-   África necesita inversión en **infraestructura tecnológica**.
+-   Monitorear convergencia regional mediante modelos dinámicos (GMM).
+
+------------------------------------------------------------------------
+
+## Referencias
+
+-   Wooldridge, J. M. (2015). *Introductory Econometrics*.
+-   Gujarati, D. N. (2011). *Econometría*.
+-   Greene, W. H. (2018). *Econometric Analysis*.
